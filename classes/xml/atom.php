@@ -14,7 +14,6 @@ class XML_Atom extends XML
 	
 	public $namespaces = array	(
 								"default"	=> "http://www.w3.org/2005/Atom",
-								"osearch"	=> "http://www.example.com",
 								);
 
 	public $filters = array(
@@ -26,7 +25,7 @@ class XML_Atom extends XML
 							'published'	=> 'normalize_date',
 							);
 
-	public $headers = array('Content-Type' => 'atom+xml');
+	public $headers = array('Content-Type' => 'application/atom+xml');
 
 
 	public function normalize_date($value)

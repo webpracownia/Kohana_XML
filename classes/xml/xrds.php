@@ -16,7 +16,7 @@
 							'URI'				=> 'normalize_uri'
 							);
 	
-	public $headers = array('Content-Type' => 'xrds+xml');
+	public $headers = array('Content-Type' => 'application/xrds+xml');
 	
 	public $root_node = 'xrds:XRDS';
 	

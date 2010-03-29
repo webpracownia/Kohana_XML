@@ -10,11 +10,11 @@
 
 class XML_Rss extends XML
 {
-	protected $root_node = 'feed';
+	protected $root_node = 'rss';
 								
 	protected $root_attributes = array	(
-									'version'	=> '2.0',
-									);
+										'version'	=> '2.0',
+										);
 
 	public $filters = array(
 							'link'			=> 'normalize_uri',
@@ -24,7 +24,7 @@ class XML_Rss extends XML
 							'lastBuildDate'	=> 'normalize_date',
 							);
 
-	public $headers = array('Content-Type' => 'atom+xml');
+	public $headers = array('Content-Type' => 'application/rss+xml');
 
 
 	public function normalize_date($value)
@@ -34,7 +34,7 @@ class XML_Rss extends XML
 			$value = strtotime($value);
 		}
 
-		// Convert timestamps to RFC 3339 formatted dates
+		// Convert timestamps to RFC 822 formatted dates
 		return date(DATE_RFC822, $value);
 	}
 }
