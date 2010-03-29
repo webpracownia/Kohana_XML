@@ -14,6 +14,7 @@ class XML_Atom extends XML
 	
 	public $namespaces = array	(
 								"default"	=> "http://www.w3.org/2005/Atom",
+								"osearch"	=> "http://a9.com/-/spec/opensearch/1.1"
 								);
 
 	public $filters = array(

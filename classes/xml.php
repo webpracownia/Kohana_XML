@@ -510,7 +510,7 @@
 		{
 			list ($prefix) = $ns_array;
 			// Register the prefixed namespace
-			//$this->dom_doc->documentElement->setAttributeNS("http://www.w3.org/2000/xmlns/" ,"xmlns:$prefix", $this->namespaces[$prefix]);
+			$this->dom_doc->documentElement->setAttributeNS("http://www.w3.org/2000/xmlns/" ,"xmlns:$prefix", $this->namespaces[$prefix]);
 
 			// Create the prefixed element within that namespace
 			$node = $this->dom_doc->createElementNS($this->namespaces[$prefix], $name);
