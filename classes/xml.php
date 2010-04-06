@@ -266,6 +266,16 @@
 	 * Handles element with the same name.
 	 * 
 	 * Root node is ignored, as it is known and available in the driver.
+	 * Example : 
+	 * <node_name attr_name="val">
+	 * 		<child_node_name>
+	 * 			value1
+	 * 		</child_node_name>
+	 * 		<child_node_name>
+	 * 			value2
+	 * 		</child_node_name>
+	 * </node_name>
+	 * 
 	 * Here's the resulting array structure :
 	 * array ("node_name" => array(
 	 * 					// array of nodes called "node_name"	
@@ -390,19 +400,27 @@
 			{
 				if ( is_numeric($index) )
 				{
+					// If we have numeric keys, we're having multiple children of the same node.
+					// Append the new node to the current node's parent
+					// If this is the first node to add, $node = $dom_element
 					$node = $dom_element;
 					if ( $index != 0 )
 					{
-						$dom_element->parentNode->appendChild($node);
+						// If not, lets create a copy of the node with the same name 
+						$node = $this->create_element($dom_element->tagName);
+						// And append it to the parent node
+						$node = $dom_element->parentNode->appendChild($node);
 					}
 					$this->_from_array($mixed_element, $node);
 				}
 				elseif ($index == "xml_attributes")
 				{
+					// Add attributes to the node
 					$this->add_attributes($dom_element, $mixed_element);
 				}
 				else
 				{
+					// Create a new element with the key as the element name.
 					// Create the element corresponding to the key
 					$node = $this->create_element($index);
 					// Append it
