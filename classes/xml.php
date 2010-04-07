@@ -130,11 +130,12 @@
 		}
 		else
 		{
-			throw Kohana_Exception("You have to specify a root_node, either in your driver or in the constructor if you're not using any.");
+			throw new Kohana_Exception("You have to specify a root_node, either in your driver or in the constructor if you're not using any.");
 		}
 	}
-	
-	
+
+
+
 	/**
 	 * Adds a node to the document
 	 * @param string $name Name of the node. Prefixed namespaces are handled automatically.
@@ -176,8 +177,9 @@
 		// return an instance of this class with the child node
 		return XML::factory(self::$driver, $this->dom_node->appendChild($node));
 	}
-	
-	
+
+
+
 	/**
 	 * Magic get returns the first child node matching the value
 	 * @param object $value
@@ -187,30 +189,25 @@
 	{
 		if ( ! isset($this->$value))
 		{
-			return reset($this->get($value));
+			return current($this->get($value, FALSE));
 		}
 		parent::__get($value);
 	}
-	
-	
+
+
+
 	/**
 	 * Gets all nodes matching a name and returns them as an array.
 	 * Can also be used to get a pointer to a particular node and then deal with that node as an XML instance.
 	 * @param string $value name of the nodes desired
 	 * @param bool $as_array [optional] whether or not the nodes should be returned as an array
-	 * @param string $namespace [optional] specify a namespace (prefix or address) if you want to confine your search to a specific NS
 	 * @return array Multi-dimensional array or array of XML instances
 	 */
-	public function get($value, $as_array = TRUE, $namespace = "*")
+	public function get($value, $as_array = FALSE)
 	{
 		$return = array();
-		
-		if ( $namespace !== "*" AND ! stristr($namespace, "://"))
-		{
-			$namespace = $this->namespaces[$namespace];
-		}
 
-		foreach ($this->dom_doc->getElementsByTagNameNS($namespace, $value) as $item)
+		foreach ($this->dom_doc->getElementsByTagName($value) as $item)
 		{
 			if ($as_array)
 			{
@@ -260,7 +257,8 @@
 		return $return;
 	}
 
-	
+
+
 	/**
 	 * Exports the document as a multi-dimensional array.
 	 * Handles element with the same name.
@@ -437,6 +435,37 @@
 			$mixed = $this->apply_filter($dom_element->tagName, $mixed);
 			$dom_element->appendChild($this->dom_doc->createTextNode($mixed));
 		}
+	}
+
+
+	/**
+	 * This function is used to import another XML instance or DOMNode from another document
+	 * 
+	 * $xml1 = XML::factory("atom", "<feed><bla>bla</bla></feed>");
+	 * $xml2 = XML::factory("rss", "<test></test>");
+	 * $node_xml2 = $xml2->add_node("key");
+	 * 
+	 * // outputs "<test><key><feed><bla>bla</bla></feed></key></test>"
+	 * $node_xml2->import($xml1)->render();
+	 * 
+	 * // outputs "<feed><bla>bla</bla></feed><key><feed><bla>bla</bla></feed></key>"
+	 * $xml1->import($xml2->get("key"))->render();
+	 * 
+	 * @param object $xml XML instance or DOMNode
+	 * @return object $this Chainable function
+	 */
+	public function import($xml)
+	{
+		if (! $xml instanceof XML)
+		{
+			die(dbg($xml));
+			$xml = XML::factory(NULL, $xml);
+		}
+		// Import the node, and all its children, to the document
+		$node = $this->dom_doc->importNode($xml->dom_node, TRUE);
+		$this->dom_node->appendChild($node);
+		
+		return $this;
 	}
 
 
