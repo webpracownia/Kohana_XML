@@ -669,13 +669,24 @@
 		}
 		return $node;
 	}
-	
+
+
 	/**
 	 * Returns this drivers XML metadata
-	 * @return 
+	 * @return XML_Meta
 	 */
 	public function meta()
 	{
 		return self::$_metas[strtolower(get_class($this))];
+	}
+
+
+	/**
+	 * Returns the document content type
+	 * @return string content-type
+	 */
+	public function content_type()
+	{
+		return $this->meta()->content_type;
 	}
 }

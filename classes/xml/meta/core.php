@@ -39,12 +39,13 @@
 	/**
 	 * @var string content type for HTML headers
 	 */
-	protected $content_type;
+	public $content_type;
 	
 	/**
 	 * @var boolean whether the object is initialized
 	 */
 	protected $_initialized = FALSE;
+
 
 
 	/**
