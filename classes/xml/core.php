@@ -48,6 +48,7 @@
 	 * This creates an XML object from the specified driver.
 	 * Specify the driver name, or if there is no specific driver, the root node name
 	 * @param string $driver [optional] Driver Name
+	 * @param string $root_node [optional] Root Node name. Force the root node name. Must be used if no driver is specified.
 	 * @return XML XML object
 	 */
 	public static function factory($driver = NULL, $root_node = NULL)
@@ -58,7 +59,7 @@
 			$class = 'XML_Driver_'.ucfirst($driver);
 
 			// Register a new meta object
-			self::$_metas[$class] = $meta = new XML_Meta;
+			self::$_metas[strtolower($class)] = $meta = new XML_Meta;
 
 			// Override the meta with driver-specific attributes
 			call_user_func(array($class, "initialize"), $meta);
@@ -675,6 +676,6 @@
 	 */
 	public function meta()
 	{
-		return self::$_metas[get_class($this)];
+		return self::$_metas[strtolower(get_class($this))];
 	}
 }
