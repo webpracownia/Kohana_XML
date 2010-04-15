@@ -19,6 +19,7 @@ class XML_Driver_Atom extends XML
 				->nodes (
 							array(
 								"feed"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
+								"entry"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
 								"author"			=> array("node" => "auth"),
 								"href"				=> array("filter"		=> "normalize_uri"),
 								"logo"				=> array("filter"		=> "normalize_uri"),

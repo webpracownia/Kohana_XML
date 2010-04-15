@@ -37,10 +37,6 @@
 	 */
 	public $dom_node;
 
-	/**
-	 * @var string This instance driver's name, or root node name if no specific driver is used
-	 */
-	protected $driver;
 
 	/**
 	 * @var array Array of XML_Meta, containing metadata about XML drivers config
@@ -54,34 +50,33 @@
 	 * @param string $driver [optional] Driver Name
 	 * @return XML XML object
 	 */
-	public static function factory($driver = NULL)
+	public static function factory($driver = NULL, $root_node = NULL)
 	{
-		// Let's attempt to generate a new instance of the subclass corresponding to the driver provided
-		$class = 'XML_Driver_'.ucfirst($driver);
-
-		// Register a new meta object
-		self::$_metas[strtolower($driver)] = $meta = new XML_Meta;
-
-		if (class_exists($class))
+		if ($driver)
 		{
-			// Driver exists and is valid so it can specified
-			
+			// Let's attempt to generate a new instance of the subclass corresponding to the driver provided
+			$class = 'XML_Driver_'.ucfirst($driver);
+
+			// Register a new meta object
+			self::$_metas[$class] = $meta = new XML_Meta;
+
 			// Override the meta with driver-specific attributes
 			call_user_func(array($class, "initialize"), $meta);
-			
+
 			//  Set content type to default if it is not already set, and report it as initialized
 			$meta->content_type("text/xml")->set_initialized();
 
-			return new $class();
+			return new $class(NULL, $root_node);
 		}
 		else
 		{
-			// Driver does not exist, so we consider $driver to be the root node of a basic XML document
-			
+			// Register a new meta object in the root node
+			self::$_metas["xml"] = $meta = new XML_Meta;
+
 			// Set content type to default if it is not already set, and report it as initialized
 			$meta->content_type("text/xml")->set_initialized();
 
-			return new self(NULL, $driver);
+			return new self(NULL, $root_node);
 		}
 	}
 	
@@ -101,14 +96,8 @@
 		{
 			// If a root node is specified, overwrite the current_one
 			$this->root_node = $root_node;
-			// Set the driver name as the root node name (used to retrieve the meta)
-			$this->driver = strtolower($root_node);
 		}
-		else
-		{
-			// Set the driver name using the class name.
-			$this->driver = strtolower(substr(get_class($this), 11));
-		}
+		
 		
 		// Initialize the document with the given element
 		if (is_string($element))
@@ -539,7 +528,7 @@
 
 	/**
 	 * Render the XML.
-	 * @param boolean $formatted [optional] Should the output be nicely formatted and indented ?
+	 * @param boolean $formatted [optional] Should the output be formatted and indented ?
 	 * @return string
 	 */
 	public function render($formatted = FALSE)
@@ -686,6 +675,6 @@
 	 */
 	public function meta()
 	{
-		return self::$_metas[$this->driver];
+		return self::$_metas[get_class($this)];
 	}
 }
