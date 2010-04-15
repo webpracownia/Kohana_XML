@@ -9,5 +9,5 @@
  *      Extend this class to make your own XML based driver (Atom, XRDS, GData, RSS, PodCast RSS, or your own brewed XML format)
  */
 
- abstract class XML extends XML_Core
+ class XML extends XML_Core
  {}
