@@ -11,11 +11,6 @@
  class XML_Core
  {
 	/**
-	 * @var string XML document encoding
-	 */
-	public static $encoding = 'UTF-8';
-
-	/**
 	 * @var string XML document version
 	 */
 	public static $xml_version = "1.0";
@@ -91,15 +86,14 @@
 	public function __construct($element = NULL, $root_node = NULL)
 	{
 		// Create the initial DOMDocument
-		$this->dom_doc = new DOMDocument(self::$xml_version, self::$encoding);
+		$this->dom_doc = new DOMDocument(self::$xml_version, Kohana::$charset);
 
 		if ($root_node)
 		{
 			// If a root node is specified, overwrite the current_one
 			$this->root_node = $root_node;
 		}
-		
-		
+
 		// Initialize the document with the given element
 		if (is_string($element))
 		{
@@ -166,9 +160,8 @@
 	 */
 	public function add_node($name, $value = NULL, $attributes = array())
 	{	
-		// Trim elements
+		// Trim the name
 		$name = trim($name);
-		$value = trim($value);
 		
 		// Create the element
 		$node = $this->create_element($name);
@@ -515,82 +508,6 @@
 	}
 
 
-
-	/**
-	 * Outputs nicely formatted XML when converting as string
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->render(TRUE);
-	}
-
-
-
-	/**
-	 * Render the XML.
-	 * @param boolean $formatted [optional] Should the output be formatted and indented ?
-	 * @return string
-	 */
-	public function render($formatted = FALSE)
-	{
-		$this->dom_doc->formatOutput = $formatted;
-		return $this->dom_doc->saveXML();
-	}
-
-
-	/**
-	 * Outputs the XML in a file
-	 * @param string filename
-	 * @return 
-	 */
-	public function export($file)
-	{
-		return $this->dom_doc->save($file);
-	}
-
-
-	/**
-	 * Applies filter on a value.
-	 * These filters are callbacks usually defined in the driver.
-	 * They allow to format dates, links, standard stuff, and play 
-	 * as you wish with the value before it is added to the document.
-	 * 
-	 * You could even extend it and modidy the node name.
-	 * 
-	 * @param string $name
-	 * @param string $value
-	 * @return string $value formatted value
-	 */
-	protected function filter($name, $value)
-	{
-		$name = $this->meta()->alias($name);
-		
-		if ($this->meta()->filter($name))
-		{
-			return call_user_func(array($this, $this->meta()->filter($name)), $value);
-		}
-		return $value;
-	}
-
-
-
-	/**
-	 * This is a classic filter that takes a uri and makes a proper link
-	 * @param object $value
-	 * @return $value
-	 */
-	public function normalize_uri($value)
-	{
-		if (strpos($value, '://') === FALSE)
-		{
-			// Convert URIs to URLs
-			$value = URL::site($value, 'http');
-		}
-		return $value;
-	}
-
-
 	/**
 	 * Creates an element, sorts out namespaces (default / prefixed)
 	 * @param string $name element name
@@ -648,8 +565,8 @@
 		foreach ($attributes as $key => $val)
 		{
 			// Trim elements
-			$key = trim($key);
-			$val = trim($val);
+			$key = $this->meta()->alias(trim($key));
+			$val = $this->filter($key, trim($val));
 			
 			// Set the attribute
 			// Let's check if the attribute name has a namespace prefix, and if this prefix is defined in our driver
@@ -669,6 +586,49 @@
 		}
 		return $node;
 	}
+	
+	
+
+	/**
+	 * Applies filter on a value.
+	 * These filters are callbacks usually defined in the driver.
+	 * They allow to format dates, links, standard stuff, and play 
+	 * as you wish with the value before it is added to the document.
+	 * 
+	 * You could even extend it and modidy the node name.
+	 * 
+	 * @param string $name
+	 * @param string $value
+	 * @return string $value formatted value
+	 */
+	protected function filter($name, $value)
+	{
+		$name = $this->meta()->alias($name);
+		
+		if ($this->meta()->filter($name))
+		{
+			return call_user_func(array($this, $this->meta()->filter($name)), $value);
+		}
+		return $value;
+	}
+
+
+
+	/**
+	 * This is a classic filter that takes a uri and makes a proper link
+	 * @param object $value
+	 * @return $value
+	 */
+	public function normalize_uri($value)
+	{
+		if (strpos($value, '://') === FALSE)
+		{
+			// Convert URIs to URLs
+			$value = URL::site($value, TRUE);
+		}
+		return $value;
+	}
+
 
 
 	/**
@@ -679,14 +639,39 @@
 	{
 		return self::$_metas[strtolower(get_class($this))];
 	}
+	
+	
+
+	/**
+	 * Outputs nicely formatted XML when converting as string
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->render(TRUE);
+	}
+
 
 
 	/**
-	 * Returns the document content type
-	 * @return string content-type
+	 * Render the XML.
+	 * @param boolean $formatted [optional] Should the output be formatted and indented ?
+	 * @return string
 	 */
-	public function content_type()
+	public function render($formatted = FALSE)
 	{
-		return $this->meta()->content_type;
+		$this->dom_doc->formatOutput = $formatted;
+		return $this->dom_doc->saveXML();
+	}
+
+
+	/**
+	 * Outputs the XML in a file
+	 * @param string filename
+	 * @return 
+	 */
+	public function export($file)
+	{
+		return $this->dom_doc->save($file);
 	}
 }

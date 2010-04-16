@@ -39,7 +39,7 @@
 	/**
 	 * @var string content type for HTML headers
 	 */
-	public $content_type;
+	protected $content_type;
 	
 	/**
 	 * @var boolean whether the object is initialized
@@ -146,13 +146,21 @@
 	 * @param string $type 
 	 * @return object $this
 	 */
-	public function content_type($type, $overwrite = FALSE)
+	public function content_type($type = NULL)
 	{
-		$this->content_type = $this->_initialized ? 
+		if ($type)
+		{
+			$this->content_type = $this->_initialized ?
+									$type :
 									$this->content_type ? 
 											$this->content_type : 
-											$type : 
-									$type;
+											$type;
+		}
+		else
+		{
+			return $this->content_type;
+		}
+
 		return $this;
 	}
 	
