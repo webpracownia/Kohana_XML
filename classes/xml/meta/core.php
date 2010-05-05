@@ -76,9 +76,9 @@
 	{
 		$name = $this->alias($name);
 
-		if (isset($this->nodes_config[$name]) AND is_array($this->nodes_config[$name]) AND array_key_exists("ns", $this->nodes_config[$name]))
+		if (isset($this->nodes_config[$name]) AND is_array($this->nodes_config[$name]) AND array_key_exists("namespace", $this->nodes_config[$name]))
 		{
-			return array($this->nodes_config[$name]["ns"], Arr::get($this->nodes_config[$name], "prefix", NULL));
+			return array($this->nodes_config[$name]["namespace"], Arr::get($this->nodes_config[$name], "prefix", NULL));
 		}
 		return NULL;
 	}

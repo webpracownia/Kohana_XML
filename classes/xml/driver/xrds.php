@@ -18,7 +18,7 @@
 		$meta	->content_type("application/xrds+xml")
 				->nodes (
 							array(
-								"XRDS"				=> array("ns"			=> 'xri://$xrds', "prefix" => "xrds", "attributes"	=> array("xmlns" => 'xri://$xrd*($v*2.0)')),
+								"XRDS"				=> array("namespace"	=> 'xri://$xrds', "prefix" => "xrds", "attributes"	=> array("xmlns" => 'xri://$xrd*($v*2.0)')),
 								"LocalID"			=> array("filter"		=> "normalize_uri"),
 								"Delegate"			=> array("filter"		=> "normalize_uri", "namespace" => "http://openid.net/xmlns/1.0", "prefix" => "openid"),
 								"URI"				=> array("filter"		=> "normalize_uri"),

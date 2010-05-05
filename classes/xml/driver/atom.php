@@ -18,8 +18,8 @@ class XML_Driver_Atom extends XML
 		$meta	->content_type("application/atom+xml")
 				->nodes (
 							array(
-								"feed"				=> array("ns"			=> "http://www.w3.org/2005/Atom"),
-								"entry"				=> array("ns"			=> "http://www.w3.org/2005/Atom"),
+								"feed"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
+								"entry"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
 								"href"				=> array("filter"		=> "normalize_uri"),
 								"logo"				=> array("filter"		=> "normalize_uri"),
 								"icon"				=> array("filter"		=> "normalize_uri"),
