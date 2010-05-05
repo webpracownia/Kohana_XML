@@ -18,9 +18,8 @@ class XML_Driver_Atom extends XML
 		$meta	->content_type("application/atom+xml")
 				->nodes (
 							array(
-								"feed"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
-								"entry"				=> array("namespace"	=> "http://www.w3.org/2005/Atom"),
-								"author"			=> array("node" 		=> "auth"),
+								"feed"				=> array("ns"			=> "http://www.w3.org/2005/Atom"),
+								"entry"				=> array("ns"			=> "http://www.w3.org/2005/Atom"),
 								"href"				=> array("filter"		=> "normalize_uri"),
 								"logo"				=> array("filter"		=> "normalize_uri"),
 								"icon"				=> array("filter"		=> "normalize_uri"),
@@ -34,9 +33,9 @@ class XML_Driver_Atom extends XML
 	}
 	
 	
-	public function add_author($name, $email = NULL, $uri = NULL)
+	public function add_person($type, $name, $email = NULL, $uri = NULL)
 	{
-		$author = $this->add_node("author");
+		$author = $this->add_node($type);
 		$author->add_node("name", $name);
 		if ($email)
 		{

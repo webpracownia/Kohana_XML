@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  *	Document   : core.php
  *	Created on : 1 mai 2009, 13:03:03
@@ -72,7 +72,7 @@
 			// Set content type to default if it is not already set, and report it as initialized
 			$meta->content_type("text/xml")->set_initialized();
 
-			return new self(NULL, $root_node);
+			return new XML(NULL, $root_node);
 		}
 	}
 	
@@ -122,9 +122,9 @@
 		elseif ( ! is_null($this->root_node))
 		{
 			// Create the Root Element from the driver attributes
-			if ($this->meta()->namespace($this->root_node))
+			if ($this->meta()->ns($this->root_node))
 			{
-				list($ns, $prefix) = $this->meta()->namespace($this->root_node);
+				list($ns, $prefix) = $this->meta()->ns($this->root_node);
 				
 				$root_node_name = $prefix ? "$prefix:$this->root_node" : $this->root_node;
 				
@@ -474,6 +474,7 @@
 			$dom_element->appendChild($this->dom_doc->createTextNode($mixed));
 		}
 	}
+	
 
 
 	/**
@@ -518,9 +519,9 @@
 		$name = $this->meta()->alias($name);
 
 		// Let's check if the element name has a namespace, and if this prefix is defined in our driver
-		if ($this->meta()->namespace($name))
+		if ($this->meta()->ns($name))
 		{
-			list ($ns, $prefix) = $this->meta()->namespace($name);
+			list ($ns, $prefix) = $this->meta()->ns($name);
 			
 			if ($prefix)
 			{
@@ -570,9 +571,9 @@
 			
 			// Set the attribute
 			// Let's check if the attribute name has a namespace prefix, and if this prefix is defined in our driver
-			if ($this->meta()->namespace($key))
+			if ($this->meta()->ns($key))
 			{
-				list ($ns, $prefix) = $this->meta()->namespace($key);
+				list ($ns, $prefix) = $this->meta()->ns($key);
 				// Register the prefixed namespace
 				$this->dom_node->setAttributeNS("http://www.w3.org/2000/xmlns/" ,"xmlns:$prefix", $ns);
 				// Add the prefixed attribute within that namespace
@@ -613,7 +614,6 @@
 	}
 
 
-
 	/**
 	 * This is a classic filter that takes a uri and makes a proper link
 	 * @param object $value
@@ -627,6 +627,17 @@
 			$value = URL::site($value, TRUE);
 		}
 		return $value;
+	}
+
+
+	/**
+	 * Another classic filter to deal with boolean
+	 * @param boolean $value
+	 * @return string $value, true or false
+	 */
+	public function normalize_bool($value)
+	{
+		return $value ? "true" : "false";
 	}
 
 

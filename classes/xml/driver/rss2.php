@@ -18,7 +18,6 @@ class XML_Driver_Rss2 extends XML
 				->nodes (
 							array(
 								"rss"				=> array("attributes"	=> array("version" => "2.0")),
-								"author"			=> array("node" => "auth"),
 								"link"				=> array("filter"		=> "normalize_uri"),
 								"docs"				=> array("filter"		=> "normalize_uri"),
 								"guid"				=> array("filter"		=> "normalize_uri"),
