@@ -43,10 +43,11 @@
 	 * This creates an XML object from the specified driver.
 	 * Specify the driver name, or if there is no specific driver, the root node name
 	 * @param string $driver [optional] Driver Name
-	 * @param string $root_node [optional] Root Node name. Force the root node name. Must be used if no driver is specified.
+	 * @param string $root_node [optional] Root Node name. Force the root node name. Must be used if no driver nor element is specified.
+	 * @param string $element [optional] XML string or file to generate XML from. Must be used if no driver nor root_node is specified.
 	 * @return XML XML object
 	 */
-	public static function factory($driver = NULL, $root_node = NULL)
+	public static function factory($driver = NULL, $root_node = NULL, $element = NULL)
 	{
 		if ($driver)
 		{
@@ -54,7 +55,7 @@
 			$class = 'XML_Driver_'.ucfirst($driver);
 
 			// Register a new meta object
-			self::$_metas[strtolower($class)] = $meta = new XML_Meta;
+			XML::$_metas[strtolower($class)] = $meta = new XML_Meta;
 
 			// Override the meta with driver-specific attributes
 			call_user_func(array($class, "initialize"), $meta);
@@ -62,17 +63,17 @@
 			//  Set content type to default if it is not already set, and report it as initialized
 			$meta->content_type("text/xml")->set_initialized();
 
-			return new $class(NULL, $root_node);
+			return new $class($element, $root_node);
 		}
 		else
 		{
 			// Register a new meta object in the root node
-			self::$_metas["xml"] = $meta = new XML_Meta;
+			XML::$_metas["xml"] = $meta = new XML_Meta;
 
 			// Set content type to default if it is not already set, and report it as initialized
 			$meta->content_type("text/xml")->set_initialized();
 
-			return new XML(NULL, $root_node);
+			return new XML($element, $root_node);
 		}
 	}
 	
@@ -86,7 +87,7 @@
 	public function __construct($element = NULL, $root_node = NULL)
 	{
 		// Create the initial DOMDocument
-		$this->dom_doc = new DOMDocument(self::$xml_version, Kohana::$charset);
+		$this->dom_doc = new DOMDocument(XML::$xml_version, Kohana::$charset);
 
 		if ($root_node)
 		{
@@ -210,11 +211,6 @@
 			
 			if ($node instanceof XML)
 			{
-				if (count($this->dom_node->childNodes) == 1 AND $this->dom_node->childNodes->item(0)->nodeType !== XML_ELEMENT_NODE)
-				{
-					// We can return node value, as there's only one children and node is not an element
-					return $this->dom_node->nodeValue;
-				}
 				// Return the whole XML document
 				return $node;
 			}
@@ -648,7 +644,7 @@
 	 */
 	public function meta()
 	{
-		return self::$_metas[strtolower(get_class($this))];
+		return XML::$_metas[strtolower(get_class($this))];
 	}
 	
 	
