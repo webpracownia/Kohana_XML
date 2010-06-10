@@ -21,17 +21,18 @@
 	public $root_node;
 
 	/**
-	 * @var DOM_Element XML instance DOM document, owner of dom_node
-	 * (basically a handy shortcut of $this->dom_node->ownerDocument)
-	 */
-	public $dom_doc;
-
-	/**
-	 * @var DOM_Document XML instance DOM node.
+	 * The DOM_Element corresponding to this XML instance
 	 * This is made public to use DOM functions directly if desired.
+	 * @var DOM_Element XML instance DOM node.
 	 */
 	public $dom_node;
 
+	/**
+	 * Basically a handy shortcut of $this->dom_node->ownerDocument
+	 * All XML instance belonging to the same document will have this attribute in common
+	 * @var DOM_Document XML instance DOM document, owner of dom_node
+	 */
+	public $dom_doc;
 
 	/**
 	 * @var array Array of XML_Meta, containing metadata about XML drivers config
@@ -681,4 +682,46 @@
 	{
 		return $this->dom_doc->save($file);
 	}
-}
+
+
+	/**
+	 * Returns this instance node value, if the dom_node is a text node
+	 * 
+	 * @return string
+	 */
+	public function value()
+	{
+		if ($this->dom_node->hasChildNodes() AND $this->dom_node->firstChild->nodeType === XML_TEXT_NODE)
+		{
+			return $this->dom_node->nodeValue;
+		}
+		return NULL;
+	}
+
+
+	/**
+	 * Returns this instance node value
+	 * 
+	 * @return string|array attributes as array of attribute value if a name is specified
+	 */
+	public function attributes($attribute_name = NULL)
+	{
+		if ($attribute_name === NULL)
+		{
+			// Return an array of attributes
+			$attributes = array();
+
+			if ($this->dom_node->hasAttributes())
+			{
+				foreach ($this->dom_node->attributes as $attribute)
+				{
+					$attributes[$attribute->name] = $attribute->value;
+				}
+			}
+			return $attributes;
+		}
+
+		// Simply return the attribute value
+		return $this->dom_node->getAttribute($attribute_name);
+	}
+} // End XML_Core
