@@ -236,7 +236,7 @@
 		
 		$value = $this->meta()->alias($value);
 
-		foreach ($this->dom_doc->getElementsByTagName($value) as $item)
+		foreach ($this->dom_node->getElementsByTagName($value) as $item)
 		{
 			if ($as_array)
 			{
