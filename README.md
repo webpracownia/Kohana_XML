@@ -1,11 +1,11 @@
-Kohana_XML is a XML modules to generate and read XML documents in Kohana.
-It is build for KO3, but there are barely one or two lines that makes it KO3 specific, 
+Kohana_XML is a module used to generate and read XML documents in Kohana.
+It is built for KO3, but there are barely one or two lines that makes it KO3 specific, 
 so I guess it should work for KO2.x without much trouble.
  
 ## Notable Features
 
 * **Extendible, configurable drivers** — You can use the XML class to write simple XML, 
-or use the Atom driver to generate Atom compliant XML, or write your own driver (extending XML 
+or use drivers to generate RFC-specific compliant XML (Atom/RSS2...), or write your own driver (extending XML 
 or another driver) to generate XML compliant to any specs you want. Driver support initial 
 configuration, which will be used when using native functions, and your own function. 
 Namespaces and prefix, value filters, default attributes, node name abstraction are all part 
