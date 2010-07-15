@@ -557,7 +557,7 @@
 
 		if ($this->meta()->attributes($node_name))
 		{
-			$attributes = array_merge($this->meta()->attributes(), $attributes);
+			$attributes = array_merge($this->meta()->attributes($node_name), $attributes);
 		}
 
 		foreach ($attributes as $key => $val)
